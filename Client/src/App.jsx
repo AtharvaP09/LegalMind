@@ -1,13 +1,17 @@
-import { useState } from 'react'
+import { BrowserRouter as Router, Routes, Route , Link } from 'react-router-dom'
+import UserRegistration from './Pages/UserRegistration' 
+import UserLogin from './Pages/UserLogin'
 import './App.css'
-import SummaryInterface from "./SummaryInterface"
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-    <SummaryInterface/>
+      <Router>
+        <Routes>
+          <Route path="/UserRegistration" element={<UserRegistration />} />
+          <Route path="/UserLogin" element={<UserLogin/>}/>
+        </Routes>
+      </Router>
     </>
   )
 }
