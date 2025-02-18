@@ -1,0 +1,7 @@
+/* Main Container */
+.dashboard-container {
+    display: flex;
+    height: 100vh;
+    background-color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
