@@ -1,18 +1,34 @@
 import { useState } from 'react';
-import { FaHome, FaFileAlt, FaPencilAlt, FaClipboard, FaChevronDown, FaChevronUp, FaBars } from 'react-icons/fa';
+import { FaHome, FaFileAlt, FaPencilAlt, FaClipboard, FaBars } from 'react-icons/fa';
 import { BsDatabaseFill } from 'react-icons/bs';
 import { IoLogOut } from "react-icons/io5";
 import './Sidebar.css';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link , useNavigate } from 'react-router-dom';
+import API from '../../api';
 
 
 const Sidebar = ({ onToggleSidebar, isCollapsed }) => {
-  const [moreExpanded, setMoreExpanded] = useState(false);
 
-  const toggleMore = () => {
-    setMoreExpanded(!moreExpanded);
-  };
+  const navigate = useNavigate();
+
+  const handleLogout = async(e) => {
+    e.preventdefault();
+    try{
+      const response = await API.post('/UserLogout');
+      if (response.data){
+        sessionStorage.removeItem('username');
+        navigate('/UserLogin');
+      }
+      else {
+        alert('An error occurred');
+        console.log(response);
+    }
+    }catch(error){
+      alert('An error occurred');
+      console.log(error);
+    }
+  }
 
   return (
     <div className={`side-nav ${isCollapsed ? 'collapsed' : ''}`}>
@@ -54,36 +70,8 @@ const Sidebar = ({ onToggleSidebar, isCollapsed }) => {
           </li>
           <li className="nav-item">
             <Link to={"/"}><IoLogOut className="nav-icon" />
-            {!isCollapsed && <span>Log Out</span>}</Link>
+            {!isCollapsed && <span onClick={handleLogout}>Log Out</span>}</Link>
           </li>
-          <li className="nav-item more-item" onClick={toggleMore}>
-            <div className="more-button">
-              {isCollapsed ? 
-                <span className="more-icon">{moreExpanded ? <FaChevronUp /> : <FaChevronDown />}</span> : 
-                <>
-                  <span className="more-icon">{moreExpanded ? <FaChevronUp /> : <FaChevronDown />}</span>
-                  <span>More</span>
-                </>
-              }
-            </div>
-          </li>
-          {moreExpanded && (
-            <div className="more-submenu">
-              {!isCollapsed ? (
-                <>
-                  <li className="submenu-item">- Contact Us</li>
-                  <li className="submenu-item">- Settings</li>
-                  <li className="submenu-item">- Help</li>
-                </>
-              ) : (
-                <>
-                  <li className="submenu-item submenu-icon">S</li>
-                  <li className="submenu-item submenu-icon">S</li>
-                  <li className="submenu-item submenu-icon">H</li>
-                </>
-              )}
-            </div>
-          )}
         </ul>
       </nav>
       

@@ -1,8 +1,22 @@
 import { FaUserCircle } from 'react-icons/fa';
 import './Home.css';
 import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
 
-const Home = ({ username = "JohnDoe" }) => {
+
+const Home = () => {
+
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const storedUsername = sessionStorage.getItem('username');
+    if (storedUsername) {
+      console.log(`Welcome, ${storedUsername}!`);
+      setUsername(storedUsername);
+    }
+  }, []);
+
+
   return (
     <div className="main-content">
       <div className="top-nav">
