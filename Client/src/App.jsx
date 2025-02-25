@@ -1,26 +1,27 @@
-import { BrowserRouter as Router, Routes, Route , Link } from 'react-router-dom'
-import Dashboard from './Pages/DashBoard.jsx';
-import backgroundVideo from "./Assets/BackgroundVideo.mov"; 
+import { BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
+import UserRegistration from './Pages/UserRegistration' 
+import UserLogin from './Pages/UserLogin'
 import './App.css'
+import Dashboard from './Pages/Dashboard'
 
 function App() {
   return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/Dashboard" element={<Dashboard />} />
-        </Routes>
-      </Router>
+    <Router>
+      <Routes>
+        <Route path="/Dashboard" element={<Dashboard />}/>
+        <Route path="/UserRegistration" element={<UserRegistration />} />
+        <Route path="/UserLogin" element={<UserLogin/>}/>
+      </Routes>
+    </Router>
 
-    {/* Keeping the website simple no longer using a background video */}
-      {/* <div className="app-container">
-      <video autoPlay loop muted className="background-video">
-        <source src={backgroundVideo} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      </div>  */}
+    /* Backgorund Video for all pages*/
+    // <div className="app-container">
+    // <video autoPlay loop muted className="background-video">
+    //   <source src={backgroundVideo} type="video/mp4" />
+    //   Your browser does not support the video tag.
+    // </video>
+    // </div>
 
-    </>
   )
 }
 

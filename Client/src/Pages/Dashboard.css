@@ -2,6 +2,7 @@
 .dashboard-container {
     display: flex;
     height: 100vh;
-    background-color: #ffffff;
+    background-color: white;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border-radius: 12px;
   }
