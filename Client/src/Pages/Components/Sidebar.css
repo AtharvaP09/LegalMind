@@ -26,12 +26,13 @@
     margin-right: 16px;
   }
   
-  .logo {
+  .sidebar-logo {
     font-size: 30px;
     font-weight: bold;
     color: #ff0011;
     margin: 0;
   }
+  
   
   .create-button-container {
     padding: 16px;
