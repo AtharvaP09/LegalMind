@@ -1,0 +1,69 @@
+.document-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .heading {
+    font-size: 40px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+  }
+  
+  .subheading {
+    font-size: 1.25rem;
+    color: #4b5563;
+    margin-bottom: 3rem;
+  }
+  
+  .card-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .document-card {
+    width: 16rem;
+    height: 16rem;
+    border: 1px solid #3a3b3c;
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .document-card:hover {
+    border: 2px solid #8b5cf6;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+  
+  .icon-container {
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    width: 3rem;
+    height: 3rem;
+    stroke: #8EA7FF;
+  }
+  
+  .document-card:hover .icon {
+    stroke: hsl(240, 90%, 70%);
+  }
+  
+  .card-title {
+    font-size: 20px;
+    font-weight: 500;
+    color: #374151;
+  }

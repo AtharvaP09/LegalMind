@@ -1,18 +1,16 @@
 .auth-container {
     display: flex;
-    max-height: 100vh;
+    min-height: 100vh;
     font-family: 'Inter', sans-serif;
-    margin: auto;
   }
   
   .auth-form-container {
-    width: 50%;
+    width: 75%;
     padding: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: white;
-    border-radius: 20px;
   }
   
   .auth-form-box {
@@ -51,7 +49,7 @@
   .form-label {
     font-size: 16px;
     font-weight: 500;
-    color: #000000;
+    color: #535252;
   }
   
   .form-input {
@@ -60,6 +58,11 @@
     border-radius: 0.5rem;
     transition: all 0.2s;
     color: white;
+    background-color: #535252;
+  }
+  
+  .form-input::placeholder {
+    color: #ffffff;
   }
   
   .form-input:focus {
@@ -103,34 +106,28 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-
-    border-radius: 20px;
   }
   
   .auth-info-title {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
     margin-bottom: 1rem;
+    text-align: center;
   }
   
   .auth-info-subtitle {
     font-size: 1.25rem;
     margin-bottom: 2rem;
     opacity: 0.9;
+    text-align: center;
   }
   
   .auth-info-text {
-    font-size: 1rem;
+    font-size: 17px;
     line-height: 1.6;
     opacity: 0.8;
   }
 
   .remember-me {
     color: black;
-  }
-
-  .wrapper{
-    border: 1px solid inherit;
-    border-radius: 20px;
-    margin: 30px;
   }
