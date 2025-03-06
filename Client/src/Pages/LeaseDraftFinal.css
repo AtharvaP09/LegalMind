@@ -1,4 +1,266 @@
-.document-drafter {
-    display: flex;
-    min-height: 100vh;
-  }
+/* General Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fc;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layout */
+.lease-layout, .lease-app-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* LegalMind Logo Styles */
+.legal-mind-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: 1px;
+  color: red;
+}
+
+.logo-tagline {
+  font-size: 0.8rem;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Sidebar Styles */
+.lease-sidebar {
+  width: 250px;
+  min-width: 250px;
+  background-color: #f5f7fa;
+  padding: 1rem;
+  border-right: 1px solid #e3e3e3;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.lease-sidebar-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #0a2540;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.lease-sidebar-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 15px;
+  background-color: #e7eef7;
+  border: none;
+  border-radius: 6px;
+  color: #0a2540;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lease-sidebar-btn:hover {
+  background-color: #d1dff0;
+}
+
+.lease-sidebar-list {
+  list-style-type: none;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.lease-sidebar-item {
+  padding: 8px 12px;
+  margin-bottom: 0.3rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: black;
+}
+
+.lease-sidebar-item:hover {
+  background-color: #e1e9f5;
+}
+
+/* Content Area */
+.lease-content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  overflow: hidden; /* Prevent content area from scrolling */
+}
+
+/* Form Container Layout - Fixed with Scrollable Content */
+.lease-form-container {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 800px;
+  height: calc(100vh - 3rem); /* Full height minus padding */
+}
+
+.lease-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f8f9fb;
+  border-bottom: 1px solid #e5e9f2;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.lease-form-title {
+  color: #0a2540;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/* Download Options */
+.download-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.download-button {
+  background-color: #f0f4f9;
+  color: #0a2540;
+  border: 1px solid #d1dff0;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.download-button:hover {
+  background-color: #d1dff0;
+}
+
+/* Main Form Content - Scrollable */
+.lease-form {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.lease-form-question-group {
+  margin-bottom: 1.5rem;
+}
+
+.lease-form-question {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.lease-form-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-top: 10px;
+  border: 1px solid #d1dff0;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border 0.2s ease;
+}
+
+.lease-form-input:focus {
+  border-color: #3a86ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+}
+
+/* Form Actions */
+.lease-form-actions {
+  padding: 1rem 1.5rem;
+  margin-top: auto; /* Push to bottom of form area */
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #e5e9f2;
+  background-color: white;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.lease-button-next {
+  background-color: #ef4444;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.lease-button-next:hover {
+  background-color: #dc2626;
+}
+
+/* Footer - Always Visible */
+.lease-form-footer {
+  padding: 1.5rem;
+  background-color: #f8f9fb;
+  border-top: 1px solid #e5e9f2;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+.lease-button-submit {
+  background-color: #0a2540;
+  color: white;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.lease-button-submit:hover {
+  background-color: #0d355f;
+}
+
+.lease-button-submit:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+}
+
+/* Empty State */
+.lease-form-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fb;
+  color: #64748b;
+  font-size: 1.2rem;
+  border-radius: 10px;
+  height: 100%;
+  width: 100%;
+}
