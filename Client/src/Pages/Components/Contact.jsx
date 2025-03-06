@@ -1,4 +1,4 @@
-// import emailjs from '@emailjs/browser';
+import emailjs from '@emailjs/browser';
 import "./Contact.css";
 import { useRef } from 'react';
 
@@ -8,8 +8,8 @@ const Contact = () => {
     e.preventDefault();
 
     emailjs
-      .sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', form.current, {
-        publicKey: 'YOUR_PUBLIC_KEY',
+      .sendForm('service_ukyyi9u', 'template_qsn8fiq', form.current, {
+        publicKey: 'vCAXLffxEkxeLhDia',
       })
       .then(
         () => {

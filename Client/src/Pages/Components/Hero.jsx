@@ -8,7 +8,7 @@ const LegalHero = () => {
         <h1>Create with Precision, Analyze with Insight, Ensure Compliance with Confidence.</h1>
         <p>Your AI-Powered Assistant for Effortless Lease Document Analysis and Drafting</p>
         <div className="legal-cta-buttons">
-          <Link to={'/home'}>
+          <Link to={'/UserRegistration'}>
             <button className="legal-button">Get Started</button>
           </Link>
           <a href="#obj">

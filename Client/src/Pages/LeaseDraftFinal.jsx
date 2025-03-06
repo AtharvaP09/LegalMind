@@ -1,4 +1,3 @@
-import "./LeaseDraftFinal.css"
 
 
 const LeaseDraftFinal = () => {
