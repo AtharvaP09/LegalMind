@@ -78,3 +78,20 @@
   font-size: 16px;
   margin-left: 10px;
 }
+
+/* 🔹 Analyze Button Styling */
+.analyze-btn {
+  padding: 12px 25px;
+  font-size: 18px;
+  color: white;
+  background: #28a745; /* Green color for success */
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-top: 15px;
+  transition: background 0.3s ease;
+}
+
+.analyze-btn:hover {
+  background: #218838;
+}

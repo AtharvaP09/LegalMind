@@ -1,6 +1,10 @@
-from app import app, db , bcrypt
+from app import app, db , bcrypt, UPLOAD_FOLDER
 from flask import request, jsonify , session
 from models import User
+from extract_text import *
+from werkzeug.utils import secure_filename
+from process_lease import process_lease_document 
+# import os
 
 @app.route("/api/users", methods=["GET"])
 def get_users():
@@ -54,3 +58,23 @@ def check_session():
 @app.route('/')
 def home():
     return "Hello World"
+
+@app.route('/api/Pdf_Analysis', methods=['POST'])
+def analyze_pdf():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part in the request"}), 400
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, filename)
+    file.save(file_path)  # Save the uploaded file
+
+    # Process the document and extract clauses
+    result = process_lease_document(file_path)
+
+    # Include the file path in the response to display it in the frontend
+    return jsonify({"filename": filename, "clauses": result})
