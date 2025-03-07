@@ -9,8 +9,7 @@ import os
 from io import BytesIO
 from extract_text import *
 from werkzeug.utils import secure_filename
-from process_lease import process_lease_document 
-# import os
+from extract_text import process_lease_document 
 
 #To check the database value [To be removed before appending final code]
 @app.route("/api/users", methods=["GET"])
