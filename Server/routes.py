@@ -1,7 +1,5 @@
-from app import app, db , bcrypt
 from flask import request, jsonify , session ,send_file
 from app import app, db , bcrypt, UPLOAD_FOLDER
-from flask import request, jsonify , session
 from models import User
 from docx import Document
 from docx.shared import Pt
@@ -9,8 +7,6 @@ import os
 from io import BytesIO
 from extract_text import *
 from werkzeug.utils import secure_filename
-from extract_text import process_lease_document 
-# import os
 
 #To check the database value [To be removed before appending final code]
 @app.route("/api/users", methods=["GET"])
