@@ -74,10 +74,12 @@ def generate_lease():
         document_name = data.get('documentName', 'lease-agreement')
         username = data.get('username', 'anonymous')
         save_to_user_folder = data.get('saveToUserFolder', False)
-        
+
+        if 'additional_clauses' not in data:
+            data['additional_clauses'] = []
         # Generate the document
         doc = generate_lease_doc(data)
-        
+
         if save_to_user_folder:
             # Create user directory if it doesn't exist
             user_dir = os.path.join(USER_DOCUMENTS_DIR, username)
@@ -222,6 +224,11 @@ The clause must:
 4. Focus only on the substantive legal content
 5. Omit all headings, titles, signatures, dates or section numbers
 6. Be specific to Indian rental law context
+7. Be fair to both parties and avoid any bias
+8. not provide any discriminatory remarks
+9. not give or show any penalties if not mentioned in the request
+10. not include any notes or disclaimers in the end, just return the clause content
+11. not start and end date , instead use lease term.
 
 Lease Context:
 - Property Type: {property_type}
