@@ -13,12 +13,11 @@ const LeaseDraftInitial = () => {
   const handleDocumentName = (e) => {
     const name = e.target.value;
     setDocumentName(name);
-    sessionStorage.setItem("documentName", name);
   };
 
   const handleCreateDocument = () => {
     if (documentName.trim()) {
-      sessionStorage.setItem("documentName", documentName);
+      sessionStorage.setItem("documentName", documentName.trim());
       navigate("/LeaseDraftFinal"); 
     } else {
       alert("Please enter a document name before proceeding.");
@@ -77,7 +76,6 @@ const LeaseDraftInitial = () => {
             </div>
           </div>
 
-          {/* Document Preview Section */}
           <div className="preview-content">
             <div className="document-preview">
               <img 

@@ -180,7 +180,7 @@ body {
 }
 
 .lease-form-input {
-  width: 100%;
+  width: 95%;
   padding: 10px 12px;
   margin-top: 10px;
   border: 1px solid #d1dff0;
@@ -263,4 +263,248 @@ body {
   border-radius: 10px;
   height: 100%;
   width: 100%;
+}
+
+/* Add these styles to your LeaseDraftFinal.css file */
+
+.lease-form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.generate-clause-button {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 20px;
+  width: auto;
+}
+
+.generate-clause-button:hover {
+  background-color: #5649c1;
+}
+
+.generate-clause-button:disabled {
+  background-color: #a29bfe;
+  cursor: not-allowed;
+}
+
+.generated-clauses-container {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.generated-clauses-container h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.generated-clause {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.clause-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.remove-clause-button {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: background-color 0.3s;
+}
+
+.remove-clause-button:hover {
+  background-color: #ff5252;
+}
+
+/* Add these styles to your LeaseDraftFinal.css file */
+
+.lease-form-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.generate-clause-button {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-bottom: 20px;
+  width: auto;
+}
+
+.generate-clause-button:hover {
+  background-color: #5649c1;
+}
+
+.generate-clause-button:disabled {
+  background-color: #a29bfe;
+  cursor: not-allowed;
+}
+
+.generated-clauses-container {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.generated-clauses-container h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.generated-clause {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.clause-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+}
+
+.remove-clause-button {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  transition: background-color 0.3s;
+}
+
+.remove-clause-button:hover {
+  background-color: #ff5252;
+}
+
+/* New styles for Indian lease features */
+.indian-law-notice {
+  background-color: #f8f4ff;
+  border-left: 4px solid #6c5ce7;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #333;
+}
+
+.clause-examples-toggle {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.toggle-examples-button {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.toggle-examples-button:hover {
+  background-color: #e5e5e5;
+}
+
+.clause-examples-container {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.clause-examples-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.clause-example-card {
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  transition: box-shadow 0.3s;
+}
+
+.clause-example-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clause-example-card h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 16px;
+}
+
+.clause-example-card p {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.use-example-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.3s;
+}
+
+.use-example-button:hover {
+  background-color: #388e3c;
 }

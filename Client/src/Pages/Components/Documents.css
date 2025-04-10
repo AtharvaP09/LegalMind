@@ -1,0 +1,42 @@
+.documents-container {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+    color: black;
+  }
+  
+  .document-card-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .document-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 16px;
+    width: 280px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .document-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
+  .download-btn {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+  }
+  
+  .download-btn:hover {
+    background-color: #0056b3;
+  }
+
+  
