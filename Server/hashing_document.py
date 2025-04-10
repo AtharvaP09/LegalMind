@@ -6,7 +6,7 @@ path = r'C:\Users\Lenovo\OneDrive\Documents\SEMESTER 5 MINI PROJECT\lease_report
 
 # with open(path, 'rb') as opened_file: #rb = read binary
 #     content = opened_file.read()
-#     md5 = hashlib.md5()
+#     md5 = hashlib.md5()       
 #     sha1 = hashlib.sha1()
 #     sha224 = hashlib.sha224()
 #     sha256 = hashlib.sha256()
