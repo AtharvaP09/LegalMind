@@ -3,6 +3,7 @@ import Sidebar from './Components/Sidebar.jsx';
 import Home from './Components/Home.jsx';
 import DraftingDocSelection from './Components/DraftingDocSelection.jsx';
 import AnalysisPdfUpload from './Components/AnalysisPdfUpload.jsx';
+import Documents from './Components/Documents.jsx';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -24,6 +25,7 @@ const Dashboard = () => {
         {selectedSection === 'home' && <Home />}
         {selectedSection === 'drafting' && <DraftingDocSelection />}
         {selectedSection === 'analyse' && <AnalysisPdfUpload />}
+        {selectedSection === 'documents' && <Documents/>}
       </div>
     </div>
   );

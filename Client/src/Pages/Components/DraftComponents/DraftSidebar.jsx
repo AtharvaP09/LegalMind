@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PropTypes from "prop-types";
 import "../../LeaseDraftFinal.css";
 
 // Logo component for the sidebar
@@ -14,7 +15,8 @@ const sections = [
   { title: "Parties", subSections: ["Landlord Info", "Tenant Info"] },
   { title:"Lease-Details" , subSections:["Lease Term" , "Lease Start Date"]},
   { title: "Payment", subSections: ["Rent Amount", "Due Date" , "Deposit"] },
-  { title: "Additional-Details" , subSections: ["Termination Period"]}
+  { title: "Additional-Details" , subSections: ["Termination Period"]},
+  { title: "Additional-Clauses" , subSections: ["Additional Clauses"]}
 ];
 
 const LeaseSidebar = ({ onSelectSection }) => {
@@ -53,6 +55,9 @@ const LeaseSidebar = ({ onSelectSection }) => {
       ))}
     </div>
   );
+};
+LeaseSidebar.propTypes = {
+  onSelectSection: PropTypes.func.isRequired,
 };
 
 export default LeaseSidebar;

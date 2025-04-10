@@ -2,20 +2,41 @@ import { FaUserCircle } from 'react-icons/fa';
 import './Home.css';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
-
+import API from '../../api'; // Import your API instance
 
 const Home = () => {
-
   const [username, setUsername] = useState('');
+  const [documentStats, setDocumentStats] = useState({
+    drafted: 0,
+    analyzed: 0
+  });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUsername = sessionStorage.getItem('username');
     if (storedUsername) {
       console.log(`Welcome, ${storedUsername}!`);
       setUsername(storedUsername);
+      fetchDocumentStats(storedUsername);
     }
   }, []);
 
+  const fetchDocumentStats = async (username) => {
+    try {
+      setLoading(true);
+      const response = await API.get(`/api/user/documents/stats?username=${username}`);
+      setDocumentStats({
+        drafted: response.data.drafted_count || 0,
+        analyzed: response.data.analyzed_count || 0
+      });
+    } catch (error) {
+      console.error("Error fetching document stats:", error);
+      // Fallback to 0 if there's an error
+      setDocumentStats({ drafted: 0, analyzed: 0 });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="main-content">
@@ -39,11 +60,15 @@ const Home = () => {
         
         <div className="stats-section">
           <div className="stat-card">
-            <h2 className="stat-number">0</h2>
-            <p className="stat-label">Documents Created</p>
+            <h2 className="stat-number">
+              {loading ? '...' : documentStats.drafted}
+            </h2>
+            <p className="stat-label">Documents Drafted</p>
           </div>
           <div className="stat-card">
-            <h2 className="stat-number">0</h2>
+            <h2 className="stat-number">
+              {loading ? '...' : documentStats.analyzed}
+            </h2>
             <p className="stat-label">Documents Analyzed</p>
           </div>
         </div>
@@ -51,6 +76,7 @@ const Home = () => {
     </div>
   );
 };
+
 Home.propTypes = {
   username: PropTypes.string
 };

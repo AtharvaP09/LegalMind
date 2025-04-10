@@ -8,6 +8,7 @@ import LeaseDraftInitial from './Pages/LeaseDraftInitial'
 import LeaseDraftFinal from './Pages/LeaseDraftFinal'
 import LandingPage from './Pages/LandingPage'
 
+
 function App() {
   return (
     <Router>
@@ -29,7 +30,7 @@ function App() {
 
         <Route path="/"element={<LandingPage/>}/>
 
-        
+
         
       </Routes>
     </Router>

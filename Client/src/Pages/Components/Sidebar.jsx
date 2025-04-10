@@ -56,7 +56,7 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
             <FaPencilAlt className="nav-icon" />
             {!isCollapsed && <span>Drafting</span>}
           </li>
-          <li className="nav-item">
+          <li className="nav-item" onClick={() => onSelectSection('documents')}>
             <BsDatabaseFill className="nav-icon" />
             {!isCollapsed && <span>Documents</span>}
           </li>
@@ -64,6 +64,7 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
             <Link to={"/"}><IoLogOut className="nav-icon" />
             {!isCollapsed && <span onClick={handleLogout}>Log Out</span>}</Link>
           </li>
+          
         </ul>
       </nav>
     </div>
