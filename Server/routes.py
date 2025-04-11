@@ -10,9 +10,38 @@ from extract_text import *
 from werkzeug.utils import secure_filename
 from llama_cpp import Llama
 from generate_lease import generate_lease_doc
+from LegalMind_logs import log_event  # Logging module imported
+import hashlib
+from hashing_document import generate_file_hashes
 from PyPDF2 import PdfReader
 from datetime import datetime
 import re
+
+def generate_file_hash(file_path, algorithm='sha256'):
+    """
+    Generate a cryptographic hash for a file.
+    Defaults to SHA-256 for security.
+    Args:
+        file_path (str): Path to the file
+        algorithm (str): Hash algorithm (default: 'sha256')
+    Returns:
+        str: Hexadecimal hash digest
+    Raises:
+        ValueError: If algorithm is unsupported
+        RuntimeError: If file hashing fails
+    """
+    if algorithm not in hashlib.algorithms_available:
+        raise ValueError(f"Unsupported algorithm. Choose from: {hashlib.algorithms_available}")
+
+    hash_obj = hashlib.new(algorithm)
+    try:
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                hash_obj.update(chunk)
+        return hash_obj.hexdigest()
+    except Exception as e:
+        raise RuntimeError(f"Hashing failed: {str(e)}")
+
 
 USER_DOCUMENTS_DIR = "UserDocuments"
 os.makedirs(USER_DOCUMENTS_DIR, exist_ok=True)
@@ -74,61 +103,101 @@ def check_session():
 @app.route('/api/Generate_Lease', methods=["POST"])
 def generate_lease():
     try:
-        data = request.json
+        # 1. Parse request data
+        data = request.get_json()  # Changed from request.json to get_json()
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+
         document_name = data.get('documentName', 'lease-agreement')
         username = data.get('username', 'anonymous')
         save_to_user_folder = data.get('saveToUserFolder', False)
+        data.setdefault('additional_clauses', [])
 
-        if 'additional_clauses' not in data:
-            data['additional_clauses'] = []
-        # Generate the document
+        # 2. Generate document
         doc = generate_lease_doc(data)
+        if not doc:
+            raise RuntimeError("Document generation failed")
 
         if save_to_user_folder:
-            # Create user directory if it doesn't exist
+            # 3. Handle file save
             user_dir = os.path.join(USER_DOCUMENTS_DIR, username)
             os.makedirs(user_dir, exist_ok=True)
-            
-            # Save the document to user's folder
             file_path = os.path.join(user_dir, f"{document_name}.docx")
-            doc.save(file_path)
             
-            # Find user in database
+            try:
+                doc.save(file_path)
+            except Exception as save_error:
+                raise RuntimeError(f"Failed to save document: {str(save_error)}")
+
+            # 4. Generate hash
+            file_hash = None
+            try:
+                file_hash = generate_file_hashes(file_path)
+            except Exception as hash_error:
+                log_event(
+                    user_id=None,  # Will be set after user lookup
+                    action='hash_failed', 
+                    document=document_name
+                )
+
+            # 5. Database operations
             user = User.query.filter_by(username=username).first()
             if not user:
                 return jsonify({"error": "User not found"}), 404
-            
-            # Save document info to database - using UserDocument instead of Document
+
             new_doc = UserDocument(
                 filename=f"{document_name}.docx",
                 filepath=file_path,
                 status='drafted',
-                user_id=user.id
+                user_id=user.id,
+                # file_hash=file_hash
             )
-            db.session.add(new_doc)
-            db.session.commit()
             
+            try:
+                db.session.add(new_doc)
+                db.session.commit()
+            except Exception as db_error:
+                db.session.rollback()
+                raise RuntimeError(f"Database error: {str(db_error)}")
+
+            log_event(
+                user_id=user.id,
+                action='generate',
+                document=file_hash or document_name
+            )
+
             return jsonify({
                 "success": True,
-                "message": f"Document saved to {file_path}",
                 "file_path": file_path,
-                "document_id": new_doc.id
+                "document_id": new_doc.id,
+                "file_hash": file_hash
             })
+
         else:
-            # Return the file for download
+            # 6. Handle download
             output = BytesIO()
             doc.save(output)
             output.seek(0)
             
-            return send_file(
+            download_hash = hashlib.sha256(output.getvalue()).hexdigest()
+            output.seek(0)
+
+            response = send_file(
                 output,
                 as_attachment=True,
                 download_name=f"{document_name}.docx",
                 mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             )
-            
+            response.headers['X-File-Hash'] = download_hash
+            return response
+
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        # Log the full error trace
+        app.logger.error(f"Error in generate_lease: {str(e)}", exc_info=True)
+        return jsonify({
+            "error": "Document generation failed",
+            "details": str(e)
+        }), 500
 
 
 @app.route('/api/Pdf_Analysis', methods=['POST'])
