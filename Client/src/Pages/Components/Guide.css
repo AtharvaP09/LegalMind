@@ -1,0 +1,330 @@
+/* LegalMindGuide.css */
+
+/* Base Styles */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+  }
+  
+  .lm-container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Typography */
+  .lm-main-heading {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.3;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    padding-bottom: 1rem;
+  }
+  
+  .lm-main-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 4px;
+    background: linear-gradient(90deg, #3b82f6, #93c5fd);
+    border-radius: 2px;
+  }
+  
+  .lm-subheading {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #64748b;
+    display: block;
+    margin-top: 0.5rem;
+  }
+  
+  .lm-section-title {
+    font-size: 1.75rem;
+    margin: 2.5rem 0 1.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: #1e40af;
+  }
+  
+  .lm-section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.35em;
+    height: 1.2em;
+    width: 6px;
+    background: #3b82f6;
+    border-radius: 3px;
+  }
+  
+  .lm-section-subtitle {
+    font-size: 1.25rem;
+    margin: 2rem 0 1rem;
+    color: #334155;
+  }
+  
+  /* Lists */
+  .lm-toc-list,
+  .lm-features-list,
+  .lm-step-list,
+  .lm-usecase-list,
+  .lm-faq-list {
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .lm-toc-list {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  
+  .lm-toc-item {
+    position: relative;
+    margin-bottom: 0.75rem;
+  }
+  
+  .lm-feature-item,
+  .lm-step-item,
+  .lm-usecase-item,
+  .lm-faq-item {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .lm-feature-item::before,
+  .lm-usecase-item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #3b82f6;
+    font-weight: bold;
+  }
+  
+  .lm-step-list {
+    counter-reset: step-counter;
+  }
+  
+  .lm-step-item {
+    counter-increment: step-counter;
+    position: relative;
+    padding-left: 2rem;
+  }
+  
+  .lm-step-item::before {
+    content: counter(step-counter) ".";
+    position: absolute;
+    left: 0;
+    color: #3b82f6;
+    font-weight: bold;
+  }
+  
+  /* Sections */
+  .lm-content-section,
+  .lm-toc-section,
+  .lm-disclaimer-section,
+  .lm-faq-section {
+    margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .lm-content-section:last-child,
+  .lm-faq-section {
+    border-bottom: none;
+  }
+  
+  .lm-step-group {
+    margin-bottom: 2rem;
+  }
+  
+  /* Special Boxes */
+  .lm-note-box,
+  .lm-tip-box,
+  .lm-disclaimer-section {
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .lm-note-box {
+    background-color: #eff6ff;
+    border-left: 4px solid #3b82f6;
+  }
+  
+  .lm-tip-box {
+    background-color: #ecfdf5;
+    border-left: 4px solid #10b981;
+  }
+  
+  .lm-disclaimer-section {
+    background-color: #fef2f2;
+    border-left: 4px solid #ef4444;
+  }
+  
+  .lm-note-box::before,
+  .lm-tip-box::before,
+  .lm-disclaimer-section::before {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    font-weight: bold;
+  }
+  
+  .lm-note-box::before {
+    content: 'Note:';
+    color: #3b82f6;
+  }
+  
+  .lm-tip-box::before {
+    content: 'Tip:';
+    color: #10b981;
+  }
+  
+  .lm-disclaimer-section::before {
+    content: 'Disclaimer:';
+    color: #ef4444;
+  }
+  
+  /* Table of Contents */
+  .lm-toc-section {
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    border: 1px solid #e2e8f0;
+  }
+  
+  .lm-toc-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0;
+    margin: 1rem 0 0;
+  }
+  
+  .lm-toc-item {
+    margin: 0;
+  }
+  
+  .lm-toc-item a {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #e0e7ff;
+    color: #3b82f6;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  
+  .lm-toc-item a:hover {
+    background-color: #3b82f6;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+  }
+  
+  /* Links */
+  #lm-link {
+    color: #3b82f6;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  
+  #lm-link:hover {
+    color: #1e40af;
+    text-decoration: underline;
+  }
+  
+  /* Footer */
+  .lm-footer {
+    text-align: center;
+    padding: 2rem 0 0;
+    margin-top: 3rem;
+    font-size: 0.875rem;
+    color: #64748b;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  /* Back to Top Button */
+  .lm-back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 100;
+  }
+  
+  .lm-back-to-top.lm-show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .lm-back-to-top:hover {
+    background: #2563eb;
+    transform: translateY(-3px);
+  }
+  
+  /* FAQ Specific Styles */
+  .lm-faq-question {
+    color: #1e40af;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .lm-faq-answer {
+    color: #475569;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .lm-container {
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 0;
+    }
+    
+    .lm-main-heading {
+      font-size: 2rem;
+    }
+    
+    .lm-toc-list {
+      flex-direction: column;
+    }
+    
+    .lm-toc-item a {
+      display: block;
+      width: 100%;
+    }
+  }

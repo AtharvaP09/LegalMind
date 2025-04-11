@@ -15,7 +15,7 @@ const sections = [
   { title: "Parties", subSections: ["Landlord Info", "Tenant Info"] },
   { title:"Lease-Details" , subSections:["Lease Term" , "Lease Start Date"]},
   { title: "Payment", subSections: ["Rent Amount", "Due Date" , "Deposit"] },
-  { title: "Additional-Details" , subSections: ["Termination Period"]},
+  { title: "Additional-Details" , subSections: ["Termination Period","Witness-Info"]},
   { title: "Additional-Clauses" , subSections: ["Additional Clauses"]}
 ];
 

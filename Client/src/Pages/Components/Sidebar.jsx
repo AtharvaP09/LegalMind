@@ -1,6 +1,7 @@
 import { FaHome, FaFileAlt, FaPencilAlt,  FaBars } from 'react-icons/fa';
 import { BsDatabaseFill } from 'react-icons/bs';
 import { IoLogOut } from "react-icons/io5";
+import { FaQuestion } from "react-icons/fa";
 import './Sidebar.css';
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -59,6 +60,10 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
           <li className="nav-item" onClick={() => onSelectSection('documents')}>
             <BsDatabaseFill className="nav-icon" />
             {!isCollapsed && <span>Documents</span>}
+          </li>
+          <li className="nav-item" onClick={() => onSelectSection('guide')}>
+            <FaQuestion className="nav-icon" />
+            {!isCollapsed && <span>Guide</span>}
           </li>
           <li className="nav-item">
             <Link to={"/"}><IoLogOut className="nav-icon" />

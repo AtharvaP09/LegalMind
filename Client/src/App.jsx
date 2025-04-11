@@ -7,11 +7,13 @@ import ProtectedRoute from './ProtectedRoute';
 import LeaseDraftInitial from './Pages/LeaseDraftInitial'
 import LeaseDraftFinal from './Pages/LeaseDraftFinal'
 import LandingPage from './Pages/LandingPage'
+import Chat from "./pages/Components/Chatbot"
 
 
 function App() {
   return (
     <Router>
+      <Chat/>
       <Routes>
         <Route path="/UserRegistration" element={<UserRegistration />} />
         <Route path="/UserLogin" element={<UserLogin/>}/>

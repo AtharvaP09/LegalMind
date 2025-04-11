@@ -28,6 +28,11 @@ const LeaseDraftInitial = () => {
     window.open(leaseDocUrl, "_blank"); 
   };
 
+  const handleHelpClick = () => {
+    // Navigate to Dashboard and scroll to Guide section
+    navigate("/Dashboard", { state: { scrollToGuide: true } });
+  };
+
   return (
     <>
       <div className="container">
@@ -36,7 +41,9 @@ const LeaseDraftInitial = () => {
           <nav className="top-nav">
             <ul>
               <li><a href="/Dashboard">Home</a></li>
-              <li><a href="/help">Help</a></li>
+              <li>
+                <a href="#guide" onClick={handleHelpClick}>Help</a>
+              </li>
               <li>
                 <div className="user-avatar">
                   <FaUserCircle />

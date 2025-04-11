@@ -62,7 +62,8 @@ const formQuestions = {
     "Area": ["Area of the property(in sqft.)"]
   },
   "Additional-Details": {
-    "Termination Period": ["How many days before should the tenant terminate lease?"]
+    "Termination Period": ["How many days before should the tenant terminate lease?"],
+    "Witness-Info":["Witness 1 Name", "Witness 2 Name"],
   },
   "Additional-Clauses": {
     "Additional Clauses": [
@@ -84,8 +85,6 @@ const rentalTypes = [
   "Other"
 ];
 
-
-// All your existing helper functions remain the same
 const isDateField = (section, subsection, question) => {
   if (
     question.toLowerCase().includes('date') ||
@@ -108,9 +107,12 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
   const [clauseInput, setClauseInput] = useState("");
   const [isGeneratingClause, setIsGeneratingClause] = useState(false);
   const [generatedClauses, setGeneratedClauses] = useState([]);
+  const [addedClauses, setAddedClauses] = useState([]);
   const [clauseExamples, setClauseExamples] = useState([]);
   const [loadingExamples, setLoadingExamples] = useState(false);
   const [showExamples, setShowExamples] = useState(false);
+  // const [showPreview, setShowPreview] = useState(false);
+  // const [previewContent, setPreviewContent] = useState("");
 
   // Fetch clause examples
   useEffect(() => {
@@ -133,7 +135,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
     }
   };
 
-  // Your existing methods for managing form data and sections
   const getCurrentSubsections = () => {
     return Object.keys(formQuestions[selectedSection] || {});
   };
@@ -156,7 +157,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
   };
 
   const isCurrentSubsectionFilled = () => {
-    // Skip check for Additional Clauses section
     if (selectedSection === "Additional-Clauses") {
       return true;
     }
@@ -239,7 +239,8 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
   const flattenFormData = () => {
     const flattened = {
       documentName: sessionStorage.getItem("documentName") || "lease-agreement",
-      username: sessionStorage.getItem("username") || "anonymous"
+      username: sessionStorage.getItem("username") || "anonymous",
+      additional_clauses: addedClauses.map(c => c.content)
     };
 
     Object.keys(allFormData).forEach((section) => {
@@ -258,13 +259,30 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
       });
     });
 
-    // Add generated clauses
-    if (generatedClauses.length > 0) {
-      flattened["Any additional clauses to be added?"] = generatedClauses.join("\n\n");
-    }
-
     return flattened;
   };
+
+  // const handlePreview = async () => {
+  //   try {
+  //     setIsSubmitting(true);
+  //     const flattenedData = flattenFormData();
+
+  //     const response = await API.post("/api/Generate_Lease/preview", {
+  //       ...flattenedData,
+  //       preview: true
+  //     });
+
+  //     if (response.data && response.data.success) {
+  //       setPreviewContent(response.data.preview_text);
+  //       setShowPreview(true);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error generating preview:", error);
+  //     alert("Error generating preview");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   const handleNext = () => {
     if (!isCurrentSubsectionFilled()) {
@@ -342,7 +360,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
 
   const isAllQuestionsFilled = () => {
     for (const section in formQuestions) {
-      // Skip check for Additional Clauses
       if (section === "Additional-Clauses") {
         continue;
       }
@@ -383,7 +400,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
     try {
       const flattenedData = flattenFormData();
       
-      // Use your existing API service
       const response = await API.post("/api/generate_clause", {
         ...flattenedData,
         clause_request: clauseInput
@@ -392,7 +408,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
       if (response.data && response.data.success) {
         setGeneratedClauses([...generatedClauses, response.data.clause]);
         setClauseInput("");
-        alert("Clause generated successfully!");
       } else {
         alert("Error generating clause: " + (response.data.error || "Unknown error"));
       }
@@ -404,23 +419,44 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
     }
   };
   
+  const handleAddClause = (clause, index) => {
+    setAddedClauses([...addedClauses, { id: Date.now(), content: clause }]);
+    removeClause(index);
+  };
+
   const removeClause = (index) => {
     const newClauses = [...generatedClauses];
     newClauses.splice(index, 1);
     setGeneratedClauses(newClauses);
   };
 
-  const handleClauseExample = (example) => {
-      setClauseInput(example.description);
+  const removeAddedClause = (id) => {
+    setAddedClauses(addedClauses.filter(c => c.id !== id));
   };
 
-  // Special rendering for Additional Clauses section
+  const handleClauseExample = (example) => {
+    setClauseInput(example.description);
+  };
+
+  const clearAllClauses = () => {
+    if (window.confirm("Are you sure you want to remove all added clauses?")) {
+      setAddedClauses([]);
+    }
+  };
+
   if (selectedSection === "Additional-Clauses") {
     return (
       <div className="lease-form-container">
         <div className="lease-form-header">
           <h2 className="lease-form-title">{selectedSub}</h2>
           <div className="download-options">
+            {/* <button
+              className="preview-button"
+              onClick={handlePreview}
+              disabled={isSubmitting}
+            >
+              Preview Document
+            </button> */}
             <button
               className="download-button"
               onClick={() => handleDownload("docx")}
@@ -430,6 +466,25 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
             </button>
           </div>
         </div>
+
+        {/* {showPreview && (
+          <div className="preview-modal">
+            <div className="preview-content">
+              <div className="preview-header">
+                <h3>Document Preview</h3>
+                <button 
+                  className="close-preview"
+                  onClick={() => setShowPreview(false)}
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="preview-text">
+                {previewContent || "No preview content available"}
+              </div>
+            </div>
+          </div>
+        )} */}
 
         <div className="lease-form">
           <div className="indian-law-notice">
@@ -497,9 +552,42 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
               {generatedClauses.map((clause, index) => (
                 <div key={index} className="generated-clause">
                   <div className="clause-content">{clause}</div>
+                  <div className="clause-actions">
+                    <button 
+                      className="add-clause-button"
+                      onClick={() => handleAddClause(clause, index)}
+                    >
+                      Add to Document
+                    </button>
+                    <button 
+                      className="remove-clause-button" 
+                      onClick={() => removeClause(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {addedClauses.length > 0 && (
+            <div className="added-clauses-container">
+              <div className="added-clauses-header">
+                <h3>Clauses in Document ({addedClauses.length})</h3>
+                <button 
+                  className="clear-all-button"
+                  onClick={clearAllClauses}
+                >
+                  Clear All
+                </button>
+              </div>
+              {addedClauses.map((clause) => (
+                <div key={clause.id} className="added-clause">
+                  <div className="clause-content">{clause.content}</div>
                   <button 
                     className="remove-clause-button" 
-                    onClick={() => removeClause(index)}
+                    onClick={() => removeAddedClause(clause.id)}
                   >
                     Remove
                   </button>
@@ -528,7 +616,6 @@ const LeaseForm = ({ selectedSection, selectedSub, onNextSection }) => {
     );
   }
 
-  // Your existing return statement for other sections
   return (
     <div className="lease-form-container">
       <div className="lease-form-header">
