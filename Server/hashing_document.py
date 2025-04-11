@@ -24,47 +24,44 @@ import os
 
 # ---------------------- GENERALIZED VERSION ----------------------
 
-def generate_file_hashes(file_path):
+import hashlib
+import os
+
+def generate_file_hashes(file_path, algorithm='sha256'):
     """
-    Generate multiple hash digests (MD5, SHA1, SHA224, SHA256, SHA384, SHA512)
-    for the given file.
+    Generate a cryptographic hash for a file using the specified algorithm.
+    Optimized for security and performance.
     
-    :param file_path: Full path to the file
-    :return: Dictionary containing hash name and hex digest
+    Args:
+        file_path (str): Absolute path to the file
+        algorithm (str): Hash algorithm (default: 'sha256'). Options:
+                        'md5', 'sha1', 'sha224', 'sha256', 'sha384', 'sha512'
+    
+    Returns:
+        str: Hexadecimal digest of the file
+    
+    Raises:
+        FileNotFoundError: If file doesn't exist
+        ValueError: If unsupported algorithm is specified
+        RuntimeError: If file reading fails
     """
+    # Validate algorithm choice
+    if algorithm not in hashlib.algorithms_available:
+        raise ValueError(f"Unsupported algorithm. Choose from: {hashlib.algorithms_available}")
+
+    # Verify file existence
     if not os.path.isfile(file_path):
         raise FileNotFoundError(f"File not found: {file_path}")
 
-    hash_algorithms = [
-        hashlib.md5(),
-        hashlib.sha1(),
-        hashlib.sha224(),
-        hashlib.sha256(),
-        hashlib.sha384(),
-        hashlib.sha512()
-    ]
+    # Initialize selected hash object
+    hash_obj = hashlib.new(algorithm)
 
     try:
-        with open(file_path, 'rb') as file:
-            # Read the file in chunks (4 KB) for memory efficiency
-            for chunk in iter(lambda: file.read(4096), b''):
-                for hash_object in hash_algorithms:
-                    hash_object.update(chunk)
+        # Read file in 4KB chunks for memory efficiency
+        with open(file_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(4096), b''):
+                hash_obj.update(chunk)  # Update hash with each chunk
     except Exception as e:
-        raise RuntimeError(f"Error reading file: {e}")
+        raise RuntimeError(f"Hashing failed: {str(e)}")
 
-    return {h.name: h.hexdigest() for h in hash_algorithms}
-
-
-# ---------------------- USAGE EXAMPLE ----------------------
-
-if __name__ == "__main__":
-    file_path = r'C:\Users\Lenovo\OneDrive\Documents\SEMESTER 5 MINI PROJECT\lease_report.pdf'
-    
-    try:
-        hashes = generate_file_hashes(file_path)
-        print("Hash Results:")
-        for algo, digest in hashes.items():
-            print(f"{algo}: {digest}")
-    except Exception as e:
-        print("Error:", e)
+    return hash_obj.hexdigest()  # Return hexadecimal representation
