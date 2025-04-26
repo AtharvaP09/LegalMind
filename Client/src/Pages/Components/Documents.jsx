@@ -56,19 +56,29 @@ const DocumentsSection = () => {
     if (!window.confirm('Are you sure you want to delete this document?')) {
       return;
     }
-    
+  
     try {
       const username = sessionStorage.getItem('username');
-      await API.delete(`/api/user/documents/${docId}`, {
-        data: { username: username }
+      
+      // For Axios, need to send data in the correct format
+      const response = await API.delete(`/api/user/documents/${docId}`, {
+        data: { username: username },
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
-      setDocuments(documents.filter(doc => doc.id !== docId));
+  
+      if (response.data.success) {
+        setDocuments(documents.filter(doc => doc.id !== docId));
+        alert('Document deleted successfully!');
+      } else {
+        alert('Failed to delete document: ' + (response.data.error || 'Unknown error'));
+      }
     } catch (error) {
-      console.error('Failed to delete document:', error);
-      alert('Failed to delete document. Please try again.');
+      console.error('Delete error:', error);
+      alert(`Failed to delete document: ${error.response?.data?.error || error.message}`);
     }
   };
-
   const startEditing = (doc) => {
     setEditingDocId(doc.id);
     setNewFileName(doc.filename);

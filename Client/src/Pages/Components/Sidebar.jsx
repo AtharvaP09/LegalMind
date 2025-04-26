@@ -1,7 +1,7 @@
-import { FaHome, FaFileAlt, FaPencilAlt,  FaBars } from 'react-icons/fa';
+import { FaHome, FaFileAlt, FaPencilAlt, FaBars, FaQuestion } from 'react-icons/fa';
 import { BsDatabaseFill } from 'react-icons/bs';
 import { IoLogOut } from "react-icons/io5";
-import { FaQuestion } from "react-icons/fa";
+import { MdAdd } from "react-icons/md";
 import './Sidebar.css';
 import PropTypes from 'prop-types';
 import { Link, useNavigate } from 'react-router-dom';
@@ -13,7 +13,7 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
   const handleLogout = async (e) => {
     e.preventDefault();
     try {
-      const response = await API.post('/api/UserLogout' , {useCredentials: true});
+      const response = await API.post('/api/UserLogout', { useCredentials: true });
       if (response.data) {
         sessionStorage.removeItem('username');
         navigate('/UserLogin');
@@ -29,49 +29,60 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
 
   return (
     <div className={`side-nav ${isCollapsed ? 'collapsed' : ''}`}>
-      <div className="logo-container">
-        <button className="menu-toggle" onClick={onToggleSidebar}>
-          <FaBars />
-        </button>
-        {!isCollapsed && <h1 className="sidebar-logo">LegalMind</h1>}
+      <div className="sidebar-header">
+        <div className="logo-container">
+          <button className="menu-toggle" onClick={onToggleSidebar} aria-label="Toggle sidebar">
+            <FaBars />
+          </button>
+          {!isCollapsed && <h1 className="sidebar-logo">LegalMind</h1>}
+        </div>
       </div>
       
-      <div className="create-button-container">
-        <button className="create-button">
-          <span className="plus-icon">+</span>
-          {!isCollapsed && <span>Create</span>}
-        </button>
+      <div className="sidebar-content">
+        <div className="create-button-container">
+          <button className="create-button">
+            <MdAdd className="plus-icon" />
+            {!isCollapsed && <span>Create New</span>}
+          </button>
+        </div>
+        
+        <nav className="nav-menu">
+          <ul>
+            <li className="nav-item" onClick={() => onSelectSection('home')}>
+              <FaHome className="nav-icon" />
+              {!isCollapsed && <span className="nav-text">Home</span>}
+              {!isCollapsed && <div className="nav-hover-effect"></div>}
+            </li>
+            <li className="nav-item" onClick={() => onSelectSection('analyse')}>
+              <FaFileAlt className="nav-icon" />
+              {!isCollapsed && <span className="nav-text">Analyse</span>}
+              {!isCollapsed && <div className="nav-hover-effect"></div>}
+            </li>
+            <li className="nav-item" onClick={() => onSelectSection('drafting')}>
+              <FaPencilAlt className="nav-icon" />
+              {!isCollapsed && <span className="nav-text">Drafting</span>}
+              {!isCollapsed && <div className="nav-hover-effect"></div>}
+            </li>
+            <li className="nav-item" onClick={() => onSelectSection('documents')}>
+              <BsDatabaseFill className="nav-icon" />
+              {!isCollapsed && <span className="nav-text">Documents</span>}
+              {!isCollapsed && <div className="nav-hover-effect"></div>}
+            </li>
+            <li className="nav-item" onClick={() => onSelectSection('guide')}>
+              <FaQuestion className="nav-icon" />
+              {!isCollapsed && <span className="nav-text">Guide</span>}
+              {!isCollapsed && <div className="nav-hover-effect"></div>}
+            </li>
+          </ul>
+        </nav>
       </div>
       
-      <nav className="nav-menu">
-        <ul>
-          <li className="nav-item" onClick={() => onSelectSection('home')}>
-            <FaHome className="nav-icon" />
-            {!isCollapsed && <span>Home</span>}
-          </li>
-          <li className="nav-item" onClick={() => onSelectSection('analyse')}>
-            <FaFileAlt className="nav-icon" />
-            {!isCollapsed && <span>Analyse</span>}
-          </li>
-          <li className="nav-item" onClick={() => onSelectSection('drafting')}>
-            <FaPencilAlt className="nav-icon" />
-            {!isCollapsed && <span>Drafting</span>}
-          </li>
-          <li className="nav-item" onClick={() => onSelectSection('documents')}>
-            <BsDatabaseFill className="nav-icon" />
-            {!isCollapsed && <span>Documents</span>}
-          </li>
-          <li className="nav-item" onClick={() => onSelectSection('guide')}>
-            <FaQuestion className="nav-icon" />
-            {!isCollapsed && <span>Guide</span>}
-          </li>
-          <li className="nav-item">
-            <Link to={"/"}><IoLogOut className="nav-icon" />
-            {!isCollapsed && <span onClick={handleLogout}>Log Out</span>}</Link>
-          </li>
-          
-        </ul>
-      </nav>
+      <div className="sidebar-footer">
+        <div className="nav-item logout-item" onClick={handleLogout}>
+          <IoLogOut className="nav-icon" />
+          {!isCollapsed && <span className="nav-text">Log Out</span>}
+        </div>
+      </div>
     </div>
   );
 };

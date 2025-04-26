@@ -559,7 +559,7 @@ The clause must:
 8. not provide any discriminatory remarks
 9. not give or show any penalties if not mentioned in the request
 10. not include any notes or disclaimers in the end, just return the clause content
-11. not start and end date , instead use lease term.
+11. not include any form of date or time in the clause content
 
 Lease Context:
 - Property Type: {property_type}
@@ -786,3 +786,50 @@ def update_document(doc_id):
         
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/api/user/documents/<int:doc_id>', methods=['DELETE'])
+def delete_document(doc_id):
+    try:
+        # Get username from request (support both JSON and form data)
+        username = None
+        if request.is_json:
+            username = request.json.get('username')
+        else:
+            username = request.form.get('username')
+        
+        if not username:
+            return jsonify({"error": "Username parameter required"}), 400
+
+        # Verify user exists
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        # Get the document with ownership check
+        document = UserDocument.query.filter_by(id=doc_id, user_id=user.id).first()
+        if not document:
+            return jsonify({"error": "Document not found or access denied"}), 404
+
+        # Delete the file if it exists
+        file_deleted = False
+        if document.filepath and os.path.exists(document.filepath):
+            try:
+                os.remove(document.filepath)
+                file_deleted = True
+            except Exception as e:
+                current_app.logger.error(f"File deletion error: {str(e)}")
+
+        # Delete from database
+        db.session.delete(document)
+        db.session.commit()
+
+        return jsonify({
+            "success": True,
+            "message": "Document deleted successfully",
+            "file_deleted": file_deleted
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f"Delete error: {str(e)}")
+        return jsonify({"error": "Server error during deletion"}), 500
