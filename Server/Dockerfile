@@ -13,7 +13,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Install Python dependencies with pre-built wheels for llama_cpp_python
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --extra-index-url https://llama-cpp-python.github.io/whl/ -r requirements.txt
 
 # Copy the rest of the application
 COPY . .
