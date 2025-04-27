@@ -19,6 +19,18 @@ RUN pip install --no-cache-dir \
     llama-cpp-python==0.2.23 \
     && pip install --no-cache-dir -r requirements.txt
 
+# Install system dependencies for PyMuPDF (fitz) and other requirements
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Clean up build tools (optional)
 RUN apt-get remove -y build-essential cmake git && \
     apt-get autoremove -y
