@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import API from '../../api';
 import './Documents.css';
+import { FaUserCircle } from 'react-icons/fa';
 
 const DocumentsSection = () => {
   const [documents, setDocuments] = useState([]);
@@ -113,7 +114,18 @@ const DocumentsSection = () => {
     }
   };
 
-  return (
+  return (<>
+    <div className="top-nav">
+      <div className="user-section">
+        <div className="user-info">
+          <p className="username">Welcome, {username}!</p>
+          <p className="tagline">Ready to transform your legal documents?</p>
+        </div>
+        <div className="user-avatar">
+          <FaUserCircle />
+        </div>
+      </div>
+    </div>
     <div className="documents-container">
       <h2>Your Drafted Documents</h2>
       {loading ? (
@@ -183,6 +195,7 @@ const DocumentsSection = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
