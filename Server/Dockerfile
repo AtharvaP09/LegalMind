@@ -6,6 +6,8 @@ WORKDIR /app
 COPY Server/requirements.txt .
 RUN pip install -r requirements.txt
 
-COPY backend/ .
+COPY Server/ .
 
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+
+EXPOSE 5000
