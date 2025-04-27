@@ -3,11 +3,11 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copy requirements from the Server directory
-COPY ./Server/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy all backend files from Server directory
-COPY ./Server/ .
+COPY . .
 
 EXPOSE 5000
 
