@@ -20,10 +20,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir pymupdf==1.23.5 --no-build-isolation && \
     pip install --no-cache-dir -r requirements.txt
 
-# 4. Verify installation
-RUN python -c "import pymupdf; print(f'PyMuPDF version: {pymupdf.__version__}')"
 
-# 5. Copy application code
+# 4. Copy application code
 COPY . .
 
 EXPOSE 5000
