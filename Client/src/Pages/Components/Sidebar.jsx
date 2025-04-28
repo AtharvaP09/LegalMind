@@ -4,7 +4,7 @@ import { IoLogOut } from "react-icons/io5";
 import { MdAdd } from "react-icons/md";
 import './Sidebar.css';
 import PropTypes from 'prop-types';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import API from '../../api';
 
 const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
@@ -34,16 +34,18 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
           <button className="menu-toggle" onClick={onToggleSidebar} aria-label="Toggle sidebar">
             <FaBars />
           </button>
-          {!isCollapsed && <h1 className="sidebar-logo">LegalMind</h1>}
+          {!isCollapsed && <h1 className="sidebar-logo"><a href="http://localhost:5173/">LegalMind</a></h1>}
         </div>
       </div>
       
       <div className="sidebar-content">
         <div className="create-button-container">
+        <a href="http://localhost:5173/LeaseDraftInitial">
           <button className="create-button">
             <MdAdd className="plus-icon" />
             {!isCollapsed && <span>Create New</span>}
           </button>
+          </a>
         </div>
         
         <nav className="nav-menu">

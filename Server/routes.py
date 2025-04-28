@@ -279,55 +279,39 @@ def generate_structured_analysis(text, filename):
     }
 
 def extract_basic_details_with_regex(text, filename):
-    """Precise extraction of basic details using regex patterns"""
+    """Enhanced extraction for your specific document format"""
+    # Handle asterisk-marked parties
     parties = []
-    
-    # Extract parties (both Lessor/Lessee and Landlord/Tenant formats)
-    lessor_match = re.search(r'(?i)lessor[:\s]*([^\n,]+)', text)
-    landlord_match = re.search(r'(?i)landlord[:\s]*([^\n,]+)', text)
-    lessee_match = re.search(r'(?i)lessee[:\s]*([^\n,]+)', text)
-    tenant_match = re.search(r'(?i)tenant[:\s]*([^\n,]+)', text)
+    lessor_match = re.search(r'(?i)Lessor:\s*\*([^\n*]+)\*', text)
+    lessee_match = re.search(r'(?i)Lessee:\s*\*([^\n*]+)\*', text)
     
     if lessor_match:
         parties.append(f"Lessor: {lessor_match.group(1).strip()}")
-    elif landlord_match:
-        parties.append(f"Landlord: {landlord_match.group(1).strip()}")
-    
     if lessee_match:
         parties.append(f"Lessee: {lessee_match.group(1).strip()}")
-    elif tenant_match:
-        parties.append(f"Tenant: {tenant_match.group(1).strip()}")
     
-    # Extract dates (multiple pattern matching)
-    date_patterns = [
-        r'(?i)effective\s*date[:\s]*([^\n,]+)',
-        r'(?i)dated\s*:\s*([^\n,]+)',
-        r'(?i)agreement\s*made.*?on\s*this\s*(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})',
-        r'(\d{1,2}[-\/]\d{1,2}[-\/]\d{2,4})'  # Fallback date pattern
-    ]
+    # Handle "1 Years 0 Months" format
+    term_match = re.search(
+        r'(?i)Term\s*of\s*(\d+)\s*Years\s*(\d+)\s*Months',
+        text
+    )
+    term = "Not specified"
+    if term_match:
+        years = term_match.group(1)
+        months = term_match.group(2)
+        term = f"{years} Year{'s' if int(years) != 1 else ''} {months} Month{'s' if int(months) != 1 else ''}"
     
-    effective_date = "Not specified"
-    for pattern in date_patterns:
-        match = re.search(pattern, text)
-        if match:
-            effective_date = match.group(1).strip()
-            break
-    
-    # Extract lease term
-    term_match = re.search(r'(?i)term\s*:\s*([^\n,]+)', text) or \
-                 re.search(r'(?i)period\s*of\s*(\d+\s*(?:years?|months?))', text)
-    term = term_match.group(1).strip() if term_match else "Not specified"
-    
-    # Extract rent amount (supports multiple currencies)
-    rent_match = re.search(r'(?i)rent\s*:\s*([^\n,]+)', text) or \
-                 re.search(r'(?i)monthly\s*rent\s*:\s*([^\n,]+)', text) or \
-                 re.search(r'(?:₹|Rs\.|USD|INR)\s*(\d[\d,]*)', text)
+    # Handle rent amount
+    rent_match = re.search(
+        r'(?i)Rent Amount[\s:]*([^\n]+)',
+        text
+    )
     rent_amount = rent_match.group(1).strip() if rent_match else "Not specified"
     
     return {
         "documentName": filename,
         "parties": parties if parties else ["Party 1: Not specified", "Party 2: Not specified"],
-        "effectiveDate": effective_date,
+        "effectiveDate": "Not specified",  # Not in your sample
         "term": term,
         "rentAmount": rent_amount
     }

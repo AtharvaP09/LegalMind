@@ -35,7 +35,7 @@ const LeaseDraftInitial = () => {
   return (
     <div className="full-screen-container">
       <header className="header">
-        <p className="logo">LegalMind</p>
+        <p className="logo"><a href="http://localhost:5173/Dashboard">LegalMind</a></p>
         <nav className="top-nav">
           <ul>
             <li><a href="/Dashboard">Home</a></li>
