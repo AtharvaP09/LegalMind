@@ -10,7 +10,7 @@ const LegalMindLogo = () => (
 );
 
 const sections = [
-    {title: "Agreement-Details", subSections:["Location" , "Date"]},
+  {title: "Agreement-Details", subSections:["Location" , "Date"]},
   { title: "Property-Details", subSections: ["Address", "Category" , "Rooms" , "Area"] },
   { title: "Parties", subSections: ["Landlord Info", "Tenant Info"] },
   { title:"Lease-Details" , subSections:["Lease Term" , "Lease Start Date"]},
