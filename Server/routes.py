@@ -46,7 +46,7 @@ def generate_file_hash(file_path, algorithm='sha256'):
 USER_DOCUMENTS_DIR = "UserDocuments"
 os.makedirs(USER_DOCUMENTS_DIR, exist_ok=True)
 
-MODEL_PATH = "d:/Models/mistral-7b-instruct-v0.2.Q3_K_M.gguf"
+MODEL_PATH = "G:\Models\mistral-7b-instruct-v0.2.Q3_K_M.gguf"
 
 #To check the database value [To be removed before appending final code]
 @app.route("/api/users", methods=["GET"])
@@ -319,7 +319,7 @@ def extract_basic_details_with_regex(text, filename):
 def analyze_clauses_with_mistral(text):
     """Use Mistral 7B to analyze and extract clauses"""
     prompt = f"""<s>[INST] Analyze this lease agreement text and extract the most important clauses in JSON format.
-Return exactly 5-7 main clauses with their content and potential issues.
+Return all clauses with their content and potential issues.
 
 Document Text:
 {text[:12000]}... [truncated]

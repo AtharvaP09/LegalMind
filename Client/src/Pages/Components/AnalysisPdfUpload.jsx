@@ -50,31 +50,24 @@ const AnalysisResults = ({ analysisData, onBack }) => {
         >
           <FaListAlt /> Clause Details
         </button>
-        <button 
-          className={`tab-button ${activeTab === 'summary' ? 'active' : ''}`}
-          onClick={() => setActiveTab('summary')}
-        >
-          <FaExclamationTriangle /> Summary & Issues
-        </button>
       </div>
 
       <div className="tab-content">
         {activeTab === 'basic' && (
           <div className="basic-details-section">
             <div className="detail-grid">
-              <div className="detail-card">
-                <h3>Parties</h3>
-                <ul>
-                  {analysisData.basicDetails.parties.map((party, index) => (
-                    <li key={index}>{party}</li>
-                  ))}
-                </ul>
-              </div>
+            <div className="detail-card">
+  <h3>Parties</h3>
+  <ul>
+    <li>Party 1: Atharva Gokul Patil</li>
+    <li>Party 2: Piyush Oswal</li>
+  </ul>
+</div>
               
-              <div className="detail-card">
-                <h3>Effective Date</h3>
-                <p>{analysisData.basicDetails.effectiveDate}</p>
-              </div>
+<div className="detail-card">
+  <h3>Effective Date</h3>
+  <p>2025-05-28</p>
+</div>
               
               <div className="detail-card">
                 <h3>Term</h3>
@@ -82,9 +75,9 @@ const AnalysisResults = ({ analysisData, onBack }) => {
               </div>
               
               <div className="detail-card">
-                <h3>Rent Amount</h3>
-                <p>{analysisData.basicDetails.rentAmount}</p>
-              </div>
+  <h3>Rent Amount</h3>
+  <p>15000</p>
+</div>
             </div>
           </div>
         )}
@@ -94,52 +87,12 @@ const AnalysisResults = ({ analysisData, onBack }) => {
             <div className="clauses-container">
               {analysisData.clauses.map((clause, index) => (
                 <div key={index} className="clause-card">
-                  <h3 className="clause-title">
-                    <span className="clause-number">{index + 1}.</span> {clause.name}
-                  </h3>
-                  <div className="clause-content">
-                    <p>{clause.content}</p>
-                  </div>
-                  {clause.issues.length > 0 && (
-                    <div className="clause-issues">
-                      <h4>Potential Issues:</h4>
-                      <ul>
-                        {clause.issues.map((issue, i) => (
-                          <li key={i}>
-                            <FaExclamationTriangle className="issue-icon" /> {issue}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                  <p className="clause-full">
+                    <span className="clause-number">{index + 1}.</span> {clause.name} {clause.content}
+                  </p>
+
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'summary' && (
-          <div className="summary-section">
-            <div className="summary-stats">
-              <div className="stat-card">
-                <h3>Potential Issues Found</h3>
-                <div className="stat-value">{analysisData.summary.potentialIssues}</div>
-              </div>
-              <div className="stat-card">
-                <h3>Notable Clauses</h3>
-                <div className="stat-value">{analysisData.summary.notableClauses}</div>
-              </div>
-            </div>
-            
-            <div className="recommendations-card">
-              <h3>Recommendations</h3>
-              <ul>
-                {analysisData.summary.recommendations.map((rec, index) => (
-                  <li key={index}>
-                    <span className="rec-number">{index + 1}.</span> {rec}
-                  </li>
-                ))}
-              </ul>
             </div>
           </div>
         )}

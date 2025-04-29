@@ -422,7 +422,7 @@
 }
 
 .clause-number {
-  color: #666;
+  color: black;
 }
 
 .clause-issues {
@@ -499,4 +499,25 @@
 .rec-number {
   font-weight: 700;
   color: #666;
+}
+.highlighted-clause {
+  color: #007bff; /* same blue as the main text */
+  font-weight: bold;
+  font-size: 1.1rem; /* optional: match the heading size */
+}
+.clause-full {
+  color: black; /* Match exact blue color */
+  font-weight: bold;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
