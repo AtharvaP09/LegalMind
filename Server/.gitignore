@@ -3,5 +3,4 @@ __pycache__*
 flask_session*
 UserDocuments*
 test_endpoint*
-
-.env*
+.env
