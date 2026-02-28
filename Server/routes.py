@@ -8,8 +8,12 @@ from io import BytesIO
 import traceback
 from extract_text import *
 from werkzeug.utils import secure_filename
-from llama_cpp import Llama
+from groq import Groq
 from generate_lease import generate_lease_doc
+from dotenv import load_dotenv
+import json
+
+load_dotenv()
 from LegalMind_logs import log_event  # Logging module imported
 import hashlib
 from hashing_document import generate_file_hashes
@@ -46,7 +50,7 @@ def generate_file_hash(file_path, algorithm='sha256'):
 USER_DOCUMENTS_DIR = "UserDocuments"
 os.makedirs(USER_DOCUMENTS_DIR, exist_ok=True)
 
-MODEL_PATH = "d:/Models/mistral-7b-instruct-v0.2.Q3_K_M.gguf"
+# Model initialization handled via Groq
 
 #To check the database value [To be removed before appending final code]
 @app.route("/api/users", methods=["GET"])
@@ -225,10 +229,8 @@ def analyze_pdf():
         # Step 2: Generate structured analysis
         analysis = generate_structured_analysis(raw_text, filename)
         
-        # Step 3: Store analysis in database if user authenticated
-        username = request.form.get('username')
-        if username:
-            store_analysis_result(username, filename, analysis)
+        # Step 3: Analysis is returned to frontend, NO LONGER saved implicitly.
+        # It will be saved manually by the user invoking /api/save_analysis.
 
         return jsonify({
             "success": True,
@@ -263,8 +265,8 @@ def extract_text_from_pdf(file_path):
 
 def generate_structured_analysis(text, filename):
     """Generate structured analysis using Mistral 7B"""
-    # Step 1: First extract basic details with regex (more reliable)
-    basic_details = extract_basic_details_with_regex(text, filename)
+    # Step 1: Extract basic details using LLM (more reliable than regex)
+    basic_details = extract_basic_details(text, filename)
     
     # Step 2: Use Mistral for clause analysis
     clauses = analyze_clauses_with_mistral(text)
@@ -278,48 +280,62 @@ def generate_structured_analysis(text, filename):
         "summary": summary
     }
 
-def extract_basic_details_with_regex(text, filename):
-    """Enhanced extraction for your specific document format"""
-    # Handle asterisk-marked parties
-    parties = []
-    lessor_match = re.search(r'(?i)Lessor:\s*\*([^\n*]+)\*', text)
-    lessee_match = re.search(r'(?i)Lessee:\s*\*([^\n*]+)\*', text)
-    
-    if lessor_match:
-        parties.append(f"Lessor: {lessor_match.group(1).strip()}")
-    if lessee_match:
-        parties.append(f"Lessee: {lessee_match.group(1).strip()}")
-    
-    # Handle "1 Years 0 Months" format
-    term_match = re.search(
-        r'(?i)Term\s*of\s*(\d+)\s*Years\s*(\d+)\s*Months',
-        text
-    )
-    term = "Not specified"
-    if term_match:
-        years = term_match.group(1)
-        months = term_match.group(2)
-        term = f"{years} Year{'s' if int(years) != 1 else ''} {months} Month{'s' if int(months) != 1 else ''}"
-    
-    # Handle rent amount
-    rent_match = re.search(
-        r'(?i)Rent Amount[\s:]*([^\n]+)',
-        text
-    )
-    rent_amount = rent_match.group(1).strip() if rent_match else "Not specified"
-    
-    return {
-        "documentName": filename,
-        "parties": parties if parties else ["Party 1: Not specified", "Party 2: Not specified"],
-        "effectiveDate": "Not specified",  # Not in your sample
-        "term": term,
-        "rentAmount": rent_amount
-    }
+def extract_basic_details(text, filename):
+    """Robust extraction using Groq LLM to handle various templates consistently"""
+    prompt = f'''<s>[INST] Extract the following basic details from the lease agreement text below.
+Return a valid JSON object EXACTLY matching this structure:
+{{
+  "lessor": "Lessor/Landlord Name",
+  "lessee": "Lessee/Tenant Name",
+  "effectiveDate": "Start Date or Date of Agreement",
+  "term": "Duration of the lease (e.g., 11 Months, 1 Year)",
+  "rentAmount": "Monthly Rent Amount (include currency if found)"
+}}
+
+If a detail is completely missing, use "Not specified".
+
+Document Text (first 4000 chars):
+{text[:4000]}
+[/INST]</s>'''
+
+    try:
+        if groq_client is None:
+            raise ValueError("Groq client not initialized")
+            
+        response = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
+            max_tokens=500,
+            temperature=0.1,
+            top_p=0.9,
+            stop=["</s>"]
+        )
+        
+        response_text = response.choices[0].message.content
+        # Extract JSON using regex in case of surrounding text
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            details = json.loads(json_match.group())
+            details["documentName"] = filename
+            return details
+        else:
+            raise ValueError("No JSON found in response")
+            
+    except Exception as e:
+        print(f"LLM Details Extraction failed ({str(e)}), falling back to basic extraction...")
+        return {
+            "documentName": filename,
+            "lessor": "Not specified",
+            "lessee": "Not specified",
+            "effectiveDate": "Not specified",
+            "term": "Not specified",
+            "rentAmount": "Not specified"
+        }
 
 def analyze_clauses_with_mistral(text):
     """Use Mistral 7B to analyze and extract clauses"""
-    prompt = f"""<s>[INST] Analyze this lease agreement text and extract the most important clauses in JSON format.
-Return exactly 5-7 main clauses with their content and potential issues.
+    prompt = f"""<s>[INST] Analyze this lease agreement text and extract ALL important clauses in JSON format.
+Return ALL the main clauses you can find along with their content and potential issues.
 
 Document Text:
 {text[:12000]}... [truncated]
@@ -346,23 +362,23 @@ Focus on these key clauses:
 [/INST]</s>"""
 
     try:
-        response = model(
-            prompt,
+        response = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
             max_tokens=2500,
             temperature=0.4,
             top_p=0.9,
-            stop=["</s>"],
-            echo=False
+            stop=["</s>"]
         )
         
         # Extract and parse JSON from response
-        response_text = response['choices'][0]['text']
+        response_text = response.choices[0].message.content
         json_str = re.search(r'\{.*\}', response_text, re.DOTALL).group()
         clauses_data = json.loads(json_str)
         
         # Post-process clauses
         processed_clauses = []
-        for clause in clauses_data.get('clauses', [])[:7]:  # Limit to 7 clauses
+        for clause in clauses_data.get('clauses', []):  # Don't limit clauses
             if not clause.get('name') or not clause.get('content'):
                 continue
                 
@@ -389,8 +405,7 @@ def generate_fallback_clauses(text):
         re.DOTALL
     ))
     
-    # Take first 7 matches
-    for match in numbered_matches[:7]:
+    for match in numbered_matches:
         clauses.append({
             "name": match.group(3).strip(),
             "content": match.group(4).strip(),
@@ -404,7 +419,7 @@ def generate_fallback_clauses(text):
             text
         ))
         
-        for match in heading_matches[:7]:
+        for match in heading_matches:
             start = match.end()
             end = text.find('\n\n', start)
             content = text[start:end].strip() if end != -1 else text[start:].strip()
@@ -446,22 +461,53 @@ def generate_summary_from_clauses(clauses):
         "recommendations": recommendations[:5]  # Max 5 recommendations
     }
 
-def store_analysis_result(username, filename, analysis):
-    """Store analysis result in database"""
+@app.route('/api/save_analysis', methods=['POST'])
+def save_analysis():
+    """Manually save an analysis result along with chat history"""
     try:
+        data = request.json
+        username = data.get('username')
+        filename = data.get('filename')
+        analysis_data = data.get('analysis')
+        chat_history = data.get('chatMessages', [])
+        
+        if not username or not filename or not analysis_data:
+            return jsonify({"error": "Missing required fields"}), 400
+
         user = User.query.filter_by(username=username).first()
-        if user:
-            new_doc = UserDocument(
-                filename=filename,
-                filepath="",  # Not storing the actual file
-                status='analyzed',
-                analysis_data=json.dumps(analysis),
-                user_id=user.id
-            )
-            db.session.add(new_doc)
-            db.session.commit()
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+            
+        doc_id = data.get('doc_id')
+        
+        # We store both analysis_data and chat history together in the JSON blob
+        # The schema uses analysis_data column
+        combined_data = {
+            "analysis": analysis_data,
+            "chatMessages": chat_history
+        }
+
+        if doc_id:
+            existing_doc = UserDocument.query.filter_by(id=doc_id, user_id=user.id).first()
+            if existing_doc:
+                existing_doc.analysis_data = json.dumps(combined_data)
+                db.session.commit()
+                return jsonify({"success": True, "message": "Analysis updated successfully", "doc_id": existing_doc.id})
+
+        new_doc = UserDocument(
+            filename=filename,
+            filepath="",  # Not storing physical file for analyzed results
+            status='analyzed',
+            analysis_data=json.dumps(combined_data),
+            user_id=user.id
+        )
+        db.session.add(new_doc)
+        db.session.commit()
+        
+        return jsonify({"success": True, "message": "Analysis saved successfully", "doc_id": new_doc.id})
     except Exception as e:
-        print(f"Failed to store analysis: {str(e)}")
+        print(f"Failed to manually store analysis: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 #Endpoint to fetch user created files
 @app.route('/api/user/documents/stats', methods=['GET'])
 def get_user_document_stats():
@@ -480,8 +526,11 @@ def get_user_document_stats():
             status='drafted'
         ).count()
         
-        # Count analyzed documents (you'll need to implement this based on your analysis records)
-        analyzed_count = 0  # Placeholder - implement your analysis counting logic
+        # Count analyzed documents
+        analyzed_count = UserDocument.query.filter_by(
+            user_id=user.id,
+            status='analyzed'
+        ).count()
         
         return jsonify({
             "drafted_count": drafted_count,
@@ -503,29 +552,27 @@ def get_user_documents():
         return jsonify({"error": "User not found"}), 404
 
     documents = UserDocument.query.filter_by(user_id=user.id).order_by(UserDocument.created_at.desc()).all()
-    result = [doc.to_json() for doc in documents]
+    result = []
+    for doc in documents:
+        doc_json = doc.to_json()
+        if doc.status == 'analyzed' and hasattr(doc, 'analysis_data') and doc.analysis_data:
+            # Safely inject the parsed analysis data payload so the frontend can receive it directly.
+            try:
+                 doc_json["parsed_analysis_blob"] = json.loads(doc.analysis_data)
+            except Exception:
+                 doc_json["parsed_analysis_blob"] = None
+        result.append(doc_json)
     return jsonify({"documents": result})
 
     
 
-# Initialize model
-def initialize_model():
-    try:
-        # Adjust these parameters based on your system's capabilities
-        model = Llama(
-            model_path=MODEL_PATH,
-            n_ctx=4096,          # Context window size
-            n_gpu_layers=-1,     # Use all GPU layers if available
-            n_threads=4          # Number of CPU threads
-        )
-        print("Mistral model loaded successfully")
-        return model
-    except Exception as e:
-        print(f"Error loading model: {e}")
-        return None
-
-# Load model
-model = initialize_model()
+# Initialize Groq client
+try:
+    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    print("Groq client initialized successfully")
+except Exception as e:
+    print(f"Error initializing Groq client: {e}")
+    groq_client = None
 
 # Lease clause generation prompt template specific to Indian rental agreements
 def create_indian_lease_prompt(property_type, lease_term, rent_amount, property_location, clause_request):
@@ -559,8 +606,8 @@ Provide ONLY the single paragraph clause content that would be inserted into a l
 
 @app.route('/api/generate_clause', methods=['POST'])
 def generate_clause():
-    if model is None:
-        return jsonify({"error": "Model not loaded. Check server logs."}), 500
+    if groq_client is None:
+        return jsonify({"error": "Groq client not initialized. Check server logs."}), 500
         
     data = request.json
     
@@ -595,17 +642,16 @@ def generate_clause():
         )
         
         # Generate response
-        response = model(
-            prompt, 
+        response = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
             max_tokens=1024,
             temperature=0.7,
-            top_p=0.95,
-            repeat_penalty=1.15,
-            echo=False
+            top_p=0.95
         )
         
         # Extract the generated text
-        generated_text = response["choices"][0]["text"].strip()
+        generated_text = response.choices[0].message.content.strip()
         
         # Post-process to ensure Indian legal terminology
         # Remove any "Section X.X" format if it appears
@@ -648,8 +694,8 @@ def get_clause_examples():
 
 @app.route('/api/chatbot', methods=['POST'])
 def chatbot_response():
-    if model is None:
-        return jsonify({"error": "Model not loaded. Check server logs."}), 500
+    if groq_client is None:
+        return jsonify({"error": "Groq client not initialized. Check server logs."}), 500
         
     data = request.json
     user_message = data.get('message', '').strip()
@@ -659,37 +705,40 @@ def chatbot_response():
         return jsonify({"error": "No message provided"}), 400
     
     try:
+        context = data.get('context', '')
+        context_section = f"\n\nDocument Context:\n{context}" if context else ""
+
         # Create a prompt that's optimized for quick responses
         prompt = f"""<s>[INST] You are LegalMind, an AI assistant specializing in Indian lease agreements and rental laws.
 Respond to the user's query concisely (1-2 short paragraphs max) with accurate legal information.
 
 User: {username}
-Query: {user_message}
+Query: {user_message}{context_section}
 
 Guidelines:
 1. Be precise and factual about Indian rental laws
 2. Keep responses under 150 words
 3. Use simple language (avoid complex legal jargon)
 4. Format with clear line breaks for readability
-5. If suggesting clauses, provide only the most relevant part
-6. For complex questions, suggest consulting a lawyer
-7. Never provide false or speculative information
+5. If Document Context is provided, prioritize answering based on that specific document.
+6. If suggesting clauses, provide only the most relevant part
+7. For complex questions, suggest consulting a lawyer
+8. Never provide false or speculative information
 
 Provide ONLY the response content (no prefixes or labels)[/INST]</s>
 """
         # Generate response with faster, lower-quality settings
-        response = model(
-            prompt,
+        response = groq_client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="llama-3.1-8b-instant",
             max_tokens=256,  # Keep responses short
             temperature=0.5,  # More deterministic
             top_p=0.85,
-            repeat_penalty=1.1,
-            echo=False,
             stop=["</s>"]  # Stop generation at end token
         )
         
         # Extract and clean the response
-        generated_text = response["choices"][0]["text"].strip()
+        generated_text = response.choices[0].message.content.strip()
         
         # Post-processing for cleaner output
         generated_text = re.sub(r'\n+', '\n', generated_text)  # Remove extra newlines
@@ -698,7 +747,7 @@ Provide ONLY the response content (no prefixes or labels)[/INST]</s>
         return jsonify({
             "success": True,
             "response": generated_text,
-            "tokens_used": response["usage"]["total_tokens"]
+            "tokens_used": response.usage.total_tokens
         })
         
     except Exception as e:

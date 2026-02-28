@@ -21,6 +21,7 @@ class UserDocument(db.Model):
     filename = db.Column(db.String(255), nullable=False)
     filepath = db.Column(db.String(500), nullable=False)
     status = db.Column(db.String(50), nullable=False, default='drafted')  # drafted, completed, etc.
+    analysis_data = db.Column(db.Text, nullable=True) # JSON Blob
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
