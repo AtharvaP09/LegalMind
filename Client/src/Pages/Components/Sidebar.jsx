@@ -18,11 +18,12 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
         sessionStorage.removeItem('username');
         navigate('/UserLogin');
       } else {
-        alert('An error occurred');
+        alert(response.data?.message || 'Failed to logout');
         console.log(response);
       }
     } catch (error) {
-      alert('An error occurred');
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred during logout';
+      alert(errorMessage);
       console.log(error);
     }
   };
@@ -37,17 +38,17 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
           {!isCollapsed && <h1 className="sidebar-logo"><a href="http://localhost:5173/">LegalMind</a></h1>}
         </div>
       </div>
-      
+
       <div className="sidebar-content">
         <div className="create-button-container">
-        <a href="http://localhost:5173/LeaseDraftInitial">
-          <button className="create-button">
-            <MdAdd className="plus-icon" />
-            {!isCollapsed && <span>Create New</span>}
-          </button>
+          <a href="http://localhost:5173/LeaseDraftInitial">
+            <button className="create-button">
+              <MdAdd className="plus-icon" />
+              {!isCollapsed && <span>Create New</span>}
+            </button>
           </a>
         </div>
-        
+
         <nav className="nav-menu">
           <ul>
             <li className="nav-item" onClick={() => onSelectSection('home')}>
@@ -78,7 +79,7 @@ const Sidebar = ({ onToggleSidebar, isCollapsed, onSelectSection }) => {
           </ul>
         </nav>
       </div>
-      
+
       <div className="sidebar-footer">
         <div className="nav-item logout-item" onClick={handleLogout}>
           <IoLogOut className="nav-icon" />

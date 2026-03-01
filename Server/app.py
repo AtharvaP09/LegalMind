@@ -11,9 +11,9 @@ load_dotenv()
 app = Flask(__name__)
 
 # Enable CORS for frontend communication (allow production URL)
-frontend_url = os.environ.get("FRONTEND_URL", "https://legalminds6.netlify.app/")
-# Split frontend URLs if multiple are provided via comma
-origins = [url.strip() for url in frontend_url.split(",")]
+frontend_url = os.environ.get("FRONTEND_URL", "https://legalminds6.netlify.app,http://localhost:5173")
+# Split frontend URLs if multiple are provided via comma and strip trailing slashes
+origins = [url.strip().rstrip('/') for url in frontend_url.split(",")]
 CORS(app, resources={r"/api/*": {"origins": origins}}, supports_credentials=True)
 
 # Upload Folder Configuration

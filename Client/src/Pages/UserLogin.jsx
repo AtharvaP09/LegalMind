@@ -39,11 +39,12 @@ const UserLogin = () => {
         }
       }
       else {
-        alert('Invalid email or password')
+        alert(response.data?.message || 'Invalid email or password');
         console.log(response);
       }
     } catch (error) {
-      alert('An error occurred');
+      const errorMessage = error.response?.data?.message || error.message || 'An error occurred during login';
+      alert(errorMessage);
       console.log(error);
     }
   };
