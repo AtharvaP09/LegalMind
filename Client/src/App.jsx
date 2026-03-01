@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 import LeaseDraftInitial from './Pages/LeaseDraftInitial'
 import LeaseDraftFinal from './Pages/LeaseDraftFinal'
 import LandingPage from './Pages/LandingPage'
+import AdminDashboard from './Pages/AdminDashboard'
 import Chat from "./pages/Components/Chatbot"
 
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/LeaseDraftInitial" element={<LeaseDraftInitial />} />
           <Route path="/LeaseDraftFinal" element={<LeaseDraftFinal />} />
+          <Route path="/AdminDashboard" element={<AdminDashboard />} />
         </Route>
 
         <Route path="/" element={<LandingPage />} />

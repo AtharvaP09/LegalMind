@@ -43,9 +43,9 @@ bcrypt = Bcrypt(app)
 # Routes Import (Keep at the end to avoid circular imports)
 from routes import *
 
+with app.app_context():
+    db.create_all()  # Ensure all database tables are created
+
 if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()  # Ensure all database tables are created
-    
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)

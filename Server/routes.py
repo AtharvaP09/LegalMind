@@ -86,7 +86,11 @@ def UserLogin():
 
     if user and bcrypt.check_password_hash(user.password, password):
         session['username'] = user.username
-        return jsonify({"message": "User Logged In!", 'username': session['username']}), 200
+        return jsonify({
+            "message": "User Logged In!", 
+            "username": session['username'],
+            "is_admin": user.is_admin
+        }), 200
     else:
         return jsonify({"message": "Invalid Credentials!"}), 400
     
@@ -100,8 +104,71 @@ def UserLogout():
 @app.route('/api/session', methods=['GET'])
 def check_session():
     if 'username' in session:
-        return jsonify({'logged_in': True, 'username': session['username']}), 200
+        user = User.query.filter_by(username=session['username']).first()
+        is_admin = user.is_admin if user else False
+        return jsonify({'logged_in': True, 'username': session['username'], 'is_admin': is_admin}), 200
     return jsonify({'logged_in': False}), 401
+
+# Admin Routes Helper
+def is_admin_user():
+    if 'username' not in session: return False
+    user = User.query.filter_by(username=session['username']).first()
+    return user and user.is_admin
+
+# Get all users (Admin only)
+@app.route("/api/admin/users", methods=["GET"])
+def admin_get_users():
+    if not is_admin_user():
+        return jsonify({"message": "Unauthorized"}), 403
+    users = User.query.all()
+    result = [user.to_json() for user in users]
+    return jsonify(result)
+
+# Add a user (Admin only)
+@app.route("/api/admin/users", methods=["POST"])
+def admin_add_user():
+    if not is_admin_user():
+        return jsonify({"message": "Unauthorized"}), 403
+    
+    data = request.json
+    if User.query.filter_by(username=data['username']).first() or User.query.filter_by(email=data['email']).first():
+        return jsonify({"message": "User already exists!"}), 400
+        
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    is_admin = data.get('is_admin', False)
+    user = User(username=data['username'], email=data['email'], password=hashed_password, is_admin=is_admin)
+    
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"message": "User Added Successfully!"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+# Delete a user (Admin only)
+@app.route("/api/admin/users/<int:user_id>", methods=["DELETE"])
+def admin_delete_user(user_id):
+    if not is_admin_user():
+        return jsonify({"message": "Unauthorized"}), 403
+        
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found!"}), 404
+        
+    if user.username == 'admin':
+        return jsonify({"message": "Cannot delete the master admin user!"}), 400
+        
+    try:
+        # Delete user's documents first (manual cascade)
+        UserDocument.query.filter_by(user_id=user.id).delete()
+        # Delete User
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": "User and associated documents deleted successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
 
 #Creating Lease document
 @app.route('/api/Generate_Lease', methods=["POST"])

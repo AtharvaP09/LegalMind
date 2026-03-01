@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Navbar.css";
 import { Link } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { IoClose } from "react-icons/io5";
+import API from "../../api";
 
 const UniqueNavbar = () => {
   const [showSidebar, setSidebar] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await API.get('/api/session', { withCredentials: true });
+        if (response.data.logged_in && response.data.is_admin) {
+          setIsAdmin(true);
+        }
+      } catch (error) {
+        console.error("Not logged in or not admin");
+      }
+    };
+    checkAdmin();
+  }, []);
 
   return (
     <>
@@ -16,6 +32,11 @@ const UniqueNavbar = () => {
           </div>
           <div className="nav-items-unique hideonPhone-unique">
             <ul className="navul-unique">
+              {isAdmin && (
+                <li className="navli-unique">
+                  <Link to={"/AdminDashboard"} style={{ color: "#a5b4fc", fontWeight: "bold" }}>Admin Panel</Link>
+                </li>
+              )}
               <li className="navli-unique">
                 <Link to={"/Dashboard"}>Dashboard</Link>
               </li>

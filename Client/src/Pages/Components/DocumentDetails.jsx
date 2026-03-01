@@ -13,20 +13,20 @@ const DocumentDetails = () => {
   const [document, setDocument] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // Assuming you have context or state for username
   const username = localStorage.getItem('username');
-  
+
   useEffect(() => {
     const fetchDocumentDetails = async () => {
       try {
-        const response = await fetch(`/api/user/documents/${id}?username=${username}`);
+        const response = await fetch(`https://legalmind-backend-6meh.onrender.com/api/user/documents/${id}?username=${username}`);
         const data = await response.json();
-        
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to fetch document details');
         }
-        
+
         setDocument(data.document);
       } catch (err) {
         setError(err.message);
@@ -34,10 +34,10 @@ const DocumentDetails = () => {
         setLoading(false);
       }
     };
-    
+
     fetchDocumentDetails();
   }, [id, username]);
-  
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" p={5}>
@@ -45,7 +45,7 @@ const DocumentDetails = () => {
       </Box>
     );
   }
-  
+
   if (error) {
     return (
       <Box textAlign="center" p={5}>
@@ -53,7 +53,7 @@ const DocumentDetails = () => {
       </Box>
     );
   }
-  
+
   if (!document) {
     return (
       <Box textAlign="center" p={5}>
@@ -61,13 +61,13 @@ const DocumentDetails = () => {
       </Box>
     );
   }
-  
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h4" component="h1" gutterBottom>
         {document.filename}
       </Typography>
-      
+
       <Box mb={4}>
         <Typography variant="body1" color="textSecondary">
           Created: {document.created_at}
@@ -76,20 +76,20 @@ const DocumentDetails = () => {
           Status: {document.status}
         </Typography>
       </Box>
-      
+
       <Divider />
-      
+
       {/* Your existing document content sections */}
-      
+
       {/* Add the extracted text section if the document has been analyzed */}
       {document.status === 'analyzed' && document.has_extracted_text && (
-        <ExtractedTextSection 
+        <ExtractedTextSection
           documentId={document.id}
           documentName={document.filename}
           username={username}
         />
       )}
-      
+
       {/* Other sections of your document details page */}
     </Container>
   );
