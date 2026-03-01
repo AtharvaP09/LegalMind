@@ -11,7 +11,7 @@ load_dotenv()
 app = Flask(__name__)
 
 # Enable CORS for frontend communication (allow production URL)
-frontend_url = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+frontend_url = os.environ.get("FRONTEND_URL", "https://legalminds6.netlify.app/")
 # Split frontend URLs if multiple are provided via comma
 origins = [url.strip() for url in frontend_url.split(",")]
 CORS(app, resources={r"/api/*": {"origins": origins}}, supports_credentials=True)
