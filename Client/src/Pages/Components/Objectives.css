@@ -51,8 +51,22 @@
 }
 
 @media (max-width: 768px) {
+  .legal-objectives-section {
+    height: auto;
+    padding: 2rem 1rem;
+  }
+
+  .legal-objectives-title {
+    font-size: 1.8rem;
+  }
+
   .legal-objectives-content {
     flex-direction: column;
     align-items: center;
+  }
+
+  .legal-objective-card {
+    width: 100%;
+    box-sizing: border-box;
   }
 }

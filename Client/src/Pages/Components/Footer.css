@@ -61,3 +61,14 @@
     font-size: 0.875rem;
     color: #bbb;
 }
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .footer-logo h2 {
+        font-size: 28px;
+    }
+}

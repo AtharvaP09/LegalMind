@@ -1,5 +1,5 @@
-import { BrowserRouter as Router, Routes, Route  } from 'react-router-dom'
-import UserRegistration from './Pages/UserRegistration' 
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import UserRegistration from './Pages/UserRegistration'
 import UserLogin from './Pages/UserLogin'
 import './App.css'
 import Dashboard from './Pages/Dashboard'
@@ -13,27 +13,19 @@ import Chat from "./pages/Components/Chatbot"
 function App() {
   return (
     <Router>
-      <Chat/>
+      <Chat />
       <Routes>
         <Route path="/UserRegistration" element={<UserRegistration />} />
-        <Route path="/UserLogin" element={<UserLogin/>}/>
+        <Route path="/UserLogin" element={<UserLogin />} />
 
-        <Route>
+        <Route element={<ProtectedRoute />}>
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/LeaseDraftInitial" element={<LeaseDraftInitial />} />
+          <Route path="/LeaseDraftFinal" element={<LeaseDraftFinal />} />
         </Route>
 
-        <Route >
-          <Route path="/LeaseDraftInitial" element={<LeaseDraftInitial />}/>
-        </Route>
-        
-        <Route>
-          <Route path="/LeaseDraftFinal" element={<LeaseDraftFinal />}/>
-        </Route>
+        <Route path="/" element={<LandingPage />} />
 
-        <Route path="/"element={<LandingPage/>}/>
-
-
-        
       </Routes>
     </Router>
 

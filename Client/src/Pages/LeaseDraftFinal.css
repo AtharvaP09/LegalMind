@@ -24,7 +24,8 @@ body {
   color: var(--text-dark);
 }
 
-.lease-layout, .lease-app-container {
+.lease-layout,
+.lease-app-container {
   display: flex;
   height: 100vh;
   width: 100%;
@@ -579,4 +580,40 @@ select.lease-form-input {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
+}
+
+@media (max-width: 768px) {
+
+  .lease-layout,
+  .lease-app-container {
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+  }
+
+  .lease-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .lease-content {
+    padding: 1rem;
+    height: auto;
+  }
+
+  .lease-form-container {
+    height: auto;
+  }
+
+  .lease-form-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .lease-form {
+    overflow-y: visible;
+  }
 }

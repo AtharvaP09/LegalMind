@@ -22,19 +22,19 @@
 }
 
 .legal-contact-form {
-    background: linear-gradient(rgb(45, 45, 55), rgb(40, 42, 60));
+    background: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
     padding: 30px;
     max-width: 50%;
     width: 100%;
     height: auto;
-    transition: transform 0.7s ease, box-shadow 0.1s ease;
+    transition: transform 0.7s ease, box-shadow 0.3s ease;
 }
 
 .legal-contact-form:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .legal-form-group {
@@ -44,42 +44,46 @@
 .legal-form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #ffffff;
+    color: #333333;
     font-weight: bold;
 }
 
 .legal-form-group input,
 .legal-form-group textarea {
+    box-sizing: border-box;
     width: 100%;
-    padding: 15px 2px;
-    border: 2px solid #ccc;
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
     border-radius: 8px;
     font-size: 1rem;
-    background: rgba(0, 0, 0, 0.2);
-    color: #ffffff;
+    font-family: inherit;
+    background: #f9f9f9;
+    color: #333333;
     transition: border 0.2s ease, background 0.2s ease;
+    resize: vertical;
 }
 
 .legal-form-group input::placeholder,
 .legal-form-group textarea::placeholder {
-    color: #c4bebe;
+    color: #999999;
 }
 
 .legal-form-group input:focus,
 .legal-form-group textarea:focus {
-    border-color: #ffffff;
+    border-color: #23715e;
     outline: none;
+    background: #ffffff;
 }
 
 .legal-sub-button {
-    --color: #ffffff;
+    --color: #23715e;
     padding: 0.8em 1.7em;
     background-color: transparent;
     border-radius: .3em;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: .5s;
+    transition: .7s;
     font-weight: 500;
     font-size: 17px;
     border: 1px solid var(--color);
@@ -87,15 +91,17 @@
     text-transform: uppercase;
     color: var(--color);
     z-index: 1;
-    margin-top: 20px;
-    left: 37%;
-    margin: 10px;
+    margin-top: 10px;
+    display: block;
+    width: 35%;
+    margin-left: 32%;
 }
 
 .legal-sub-button::before,
 .legal-sub-button::after {
     content: '';
     display: block;
+    width: 50px;
     height: 50px;
     transform: translate(-50%, -50%);
     position: absolute;
@@ -122,7 +128,7 @@
 }
 
 .legal-sub-button:hover {
-    color: #000000;
+    color: rgb(255, 255, 255);
 }
 
 .legal-sub-button:active {
@@ -130,11 +136,24 @@
 }
 
 @media screen and (max-width: 800px) {
+    .legal-contact-section {
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+    }
+
     .legal-contact-form {
-        display: none;
+        display: block;
+        max-width: 100%;
+        margin-top: 2rem;
+        padding: 20px;
     }
 
     .legal-contact-title {
         max-width: 100%;
+    }
+
+    .legal-contact-title h2 {
+        font-size: 2rem;
     }
 }
