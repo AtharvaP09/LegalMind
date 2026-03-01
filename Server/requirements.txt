@@ -4,10 +4,11 @@ Flask-Cors==5.0.0
 Flask-SQLAlchemy==3.1.1
 Flask-Bcrypt==1.0.1
 python-docx==1.1.2
-PyMuPDF==1.23.5
+PyMuPDF==1.22.5
 PyPDF2==3.0.1
 fpdf==1.7.2
 groq==0.4.2
 python-dotenv==1.0.1
 gunicorn==21.2.0
 psycopg2-binary==2.9.9
+PyMuPDF==1.23.7
